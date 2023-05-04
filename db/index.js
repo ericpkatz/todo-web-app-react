@@ -11,6 +11,7 @@ const seedData = async()=> {
     Category.create({ name: 'pets'}),
     Category.create({ name: 'learning'}),
     Category.create({ name: 'chores'}),
+    Category.create({ name: 'shopping'}),
   ]);
   const [pets, learning, chores] = categories;
 
