@@ -1,6 +1,7 @@
 import React from 'react';
 
-const Todos = ({ todos, categories })=> {
+const Todos = ({ todos, categories, updateTodo })=> {
+  console.log(updateTodo);
   //const todos = props.todos;
   //const { todos } = props;
   return (
@@ -14,6 +15,23 @@ const Todos = ({ todos, categories })=> {
                 { todo.name }
               </a>
               ({ category ? category.name : 'none'})
+              <select
+                value={ todo.categoryId }
+                onChange = {
+                  ev => {
+                    const updatedTodo = {...todo, categoryId: ev.target.value * 1};
+                    updateTodo(updatedTodo);
+                  }
+                }
+              >
+                {
+                  categories.map( category => {
+                    return (
+                      <option value={ category.id } key={ category.id }>{ category.name }</option>
+                    );
+                  })
+                }
+              </select>
             </li>
           );
         })

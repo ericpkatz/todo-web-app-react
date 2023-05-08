@@ -2,7 +2,7 @@ const { conn, seedData, Todo, Category } = require('./db');
 const express = require('express');
 const app = express();
 const path = require('path');
-app.use(express.urlencoded());
+app.use(express.json());
 app.use('/dist', express.static('dist'));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
@@ -11,6 +11,17 @@ app.get('/api/todos', async(req, res, next)=> {
   try {
     const todos = await Todo.findAll();
     res.send(todos);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.put('/api/todos/:id', async(req, res, next)=> {
+  try {
+    const todo = await Todo.findByPk(req.params.id);
+    await todo.update(req.body);
+    res.send(todo);
   }
   catch(ex){
     next(ex);
