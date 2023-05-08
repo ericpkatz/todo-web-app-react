@@ -17,6 +17,21 @@ app.get('/api/todos', async(req, res, next)=> {
   }
 });
 
+app.post('/api/todos', async(req, res, next)=> {
+  try {
+    const categories = await Category.findAll();
+    const category = categories[Math.floor(Math.random()*categories.length)];
+    const todo = await Todo.create({
+      name: `Todo number ${Math.round(Math.random() * 1000)}`,
+      categoryId: category.id
+    });
+    res.send(todo);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 app.put('/api/todos/:id', async(req, res, next)=> {
   try {
     const todo = await Todo.findByPk(req.params.id);
