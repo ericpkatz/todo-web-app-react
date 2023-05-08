@@ -1,9 +1,10 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateTodo } from './store';
 
-const Todos = ({ todos, categories, updateTodo })=> {
-  console.log(updateTodo);
-  //const todos = props.todos;
-  //const { todos } = props;
+const Todos = ()=> {
+  const { categories, todos } = useSelector(state => state);
+  const dispatch = useDispatch();
   return (
     <ul>
       {
@@ -20,7 +21,7 @@ const Todos = ({ todos, categories, updateTodo })=> {
                 onChange = {
                   ev => {
                     const updatedTodo = {...todo, categoryId: ev.target.value * 1};
-                    updateTodo(updatedTodo);
+                    dispatch(updateTodo(updatedTodo));
                   }
                 }
               >

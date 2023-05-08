@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-const Todo = ({ todos, id, categories })=> {
+const Todo = ()=> {
+  const { id, todos, categories } = useSelector(state => state);
 
   const todo = todos.find( todo => todo.id === id*1);
   //be defensive!!

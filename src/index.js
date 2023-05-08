@@ -1,43 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import store, { setId, fetchTodos, fetchCategories } from './store';
 
 import Categories from './Categories';
 import Todos from './Todos';
 import Todo from './Todo';
 
+
 function App() {
-  const [todos, setTodos] = React.useState([]);
-  const [categories, setCategories] = React.useState([]);
-  const [id, setId] = React.useState(window.location.hash.slice(1));
-
-  const updateTodo = async(todo)=> {
-    const response = await axios.put(`/api/todos/${todo.id}`, todo)
-    todo = response.data;
-    setTodos(todos.map(t => t.id === todo.id ? todo : t));
-  };
-
-  const fetchTodos = async()=> {
-    const response = await fetch('/api/todos');
-    const todos = await response.json();
-    setTodos(todos);
-  };
-
-  const fetchCategories = async()=> {
-    const response = await fetch('/api/categories');
-    const categories = await response.json();
-    setCategories(categories);
-  };
+  const {id, todos, categories} = useSelector(state => state);
+  const dispatch = useDispatch();
 
   React.useEffect(()=> {
     window.addEventListener('hashchange', ()=> {
-      setId(window.location.hash.slice(1));
+      dispatch(setId(window.location.hash.slice(1)));
     });
   }, []);
 
   React.useEffect(()=> {
-    fetchTodos();
-    fetchCategories();
+    dispatch(fetchTodos());
+    dispatch(fetchCategories());
   }, []);
 
 
@@ -46,18 +30,22 @@ function App() {
       <h1>Acme Todos ({ todos.length })!!</h1>
       {
         id ? (
-          <Todo todos={ todos } id={ id } categories={ categories }/>
+          <Todo />
         ): (
-          <Todos todos={ todos } categories={ categories } updateTodo={updateTodo }/>
+          <Todos />
         )
       }
-      <Categories categories={ categories } todos={ todos }/>
+      <Categories />
     </div>
   );
 }
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
-root.render(<App />);
+root.render(
+  <Provider store={ store }>
+    <App />
+  </Provider>
+);
 
 

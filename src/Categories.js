@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-const Categories = ({ categories, todos })=> {
+const Categories = ()=> {
+  const { categories, todos } = useSelector(state => state);
   return (
     <ul>
       {
