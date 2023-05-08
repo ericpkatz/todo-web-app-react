@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 import Categories from './Categories';
 import Todos from './Todos';
+import Todo from './Todo';
 
 function App() {
   const [todos, setTodos] = React.useState([]);
@@ -32,22 +33,18 @@ function App() {
     fetchCategories();
   }, []);
 
-  const todo = todos.find( todo => todo.id === id*1);
 
   return (
     <div>
       <h1>Acme Todos ({ todos.length })!!</h1>
       {
-        todo ? (
-          <div>
-            { todo.name }
-            <a href='#'>Back</a>
-          </div>
+        id ? (
+          <Todo todos={ todos } id={ id } categories={ categories }/>
         ): (
-          <Todos todos={ todos }/>
+          <Todos todos={ todos } categories={ categories }/>
         )
       }
-      <Categories categories={ categories } />
+      <Categories categories={ categories } todos={ todos }/>
     </div>
   );
 }
