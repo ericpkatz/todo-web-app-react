@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateTodo } from './store';
+import { updateTodo, destroyTodo } from './store';
 
 const Todos = ()=> {
   const { categories, todos } = useSelector(state => state);
@@ -16,6 +16,15 @@ const Todos = ()=> {
                 { todo.name }
               </a>
               ({ category ? category.name : 'none'})
+              <button
+                onClick= {
+                  ()=> {
+                    dispatch(destroyTodo(todo));
+                  }
+                }
+              >
+              x
+              </button>
               <select
                 value={ todo.categoryId }
                 onChange = {

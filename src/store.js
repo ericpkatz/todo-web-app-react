@@ -10,6 +10,15 @@ const updateTodo = createAsyncThunk(
   }
 );
 
+const destroyTodo = createAsyncThunk(
+  'destroyTodo',
+  async (todo)=> {
+    await axios.delete(`/api/todos/${todo.id}`)
+    return todo;
+    //return response.data;
+  }
+);
+
 const createTodo = createAsyncThunk(
   'createTodo',
   async ()=> {
@@ -64,6 +73,9 @@ const todosSlice = createSlice({
       return [...state, action.payload];
       //state.push(action.payload);
     })
+    builder.addCase(destroyTodo.fulfilled, (state, action)=> {
+      return state.filter(todo => todo.id !== action.payload.id);
+    })
   }
 });
 
@@ -95,4 +107,4 @@ export default store;
 export const { setTodos } = todosSlice.actions;
 export const { setCategories } = categoriesSlice.actions;
 export const { setId } = idSlice.actions;
-export { createTodo, updateTodo, fetchTodos, fetchCategories };
+export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories };
