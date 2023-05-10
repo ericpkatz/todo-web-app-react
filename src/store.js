@@ -9,6 +9,15 @@ const updateTodo = createAsyncThunk(
     return response.data;
   }
 );
+
+const createTodo = createAsyncThunk(
+  'createTodo',
+  async ()=> {
+    const response = await axios.post('/api/todos')
+    return response.data;
+  }
+);
+
 const fetchTodos = createAsyncThunk(
   'fetchTodos',
   async ()=> {
@@ -51,6 +60,10 @@ const todosSlice = createSlice({
     builder.addCase(updateTodo.fulfilled, (state, action)=> {
       return state.map( todo => todo.id === action.payload.id ? action.payload: todo);
     })
+    builder.addCase(createTodo.fulfilled, (state, action)=> {
+      return [...state, action.payload];
+      //state.push(action.payload);
+    })
   }
 });
 
@@ -82,4 +95,4 @@ export default store;
 export const { setTodos } = todosSlice.actions;
 export const { setCategories } = categoriesSlice.actions;
 export const { setId } = idSlice.actions;
-export { updateTodo, fetchTodos, fetchCategories };
+export { createTodo, updateTodo, fetchTodos, fetchCategories };

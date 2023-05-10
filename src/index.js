@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import store, { setId, fetchTodos, fetchCategories } from './store';
+import store, { createTodo, setId, fetchTodos, fetchCategories } from './store';
 
 import Categories from './Categories';
 import Todos from './Todos';
@@ -28,6 +28,14 @@ function App() {
   return (
     <div>
       <h1>Acme Todos ({ todos.length })!!</h1>
+      <button
+        onClick={
+          ()=> {
+            dispatch(createTodo());
+          }
+        }>
+        Create A New Todo
+      </button>
       {
         id ? (
           <Todo />
