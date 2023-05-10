@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTodo, destroyTodo } from './store';
+import { Link } from 'react-router-dom';
 
 const Todos = ()=> {
   const { categories, todos } = useSelector(state => state);
@@ -12,9 +13,9 @@ const Todos = ()=> {
           const category = categories.find(category => category.id === todo.categoryId);
           return (
             <li key={ todo.id }>
-              <a href={`#${ todo.id }`}>
+              <Link to={`/${todo.id}`}>
                 { todo.name }
-              </a>
+              </Link>
               ({ category ? category.name : 'none'})
               <button
                 onClick= {

@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 const Todo = ()=> {
-  const { id, todos, categories } = useSelector(state => state);
+  const { todos, categories } = useSelector(state => state);
+  const { id } = useParams();
 
   const todo = todos.find( todo => todo.id === id*1);
   //be defensive!!

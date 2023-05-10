@@ -21,8 +21,8 @@ const destroyTodo = createAsyncThunk(
 
 const createTodo = createAsyncThunk(
   'createTodo',
-  async ()=> {
-    const response = await axios.post('/api/todos')
+  async (todo)=> {
+    const response = await axios.post('/api/todos', todo)
     return response.data;
   }
 );
@@ -44,23 +44,10 @@ const fetchCategories = createAsyncThunk(
 );
 
 
-const idSlice = createSlice({
-  name: 'id',
-  initialState: window.location.hash.slice(1),
-  reducers: {
-    setId: (state, action)=> {
-      return action.payload;
-    }
-  }
-});
-
 const todosSlice = createSlice({
   name: 'todos',
   initialState: [],
   reducers: {
-    setTodos: (state, action)=> {
-      return action.payload;
-    }
   },
   extraReducers: (builder)=> {
     builder.addCase(fetchTodos.fulfilled, (state, action)=> {
@@ -83,9 +70,6 @@ const categoriesSlice = createSlice({
   name: 'categories',
   initialState: [],
   reducers: {
-    setCategories: (state, action)=> {
-      return action.payload;
-    }
   },
   extraReducers: (builder)=> {
     builder.addCase(fetchCategories.fulfilled, (state, action)=> {
@@ -97,14 +81,10 @@ const categoriesSlice = createSlice({
 const store = configureStore({
   reducer: {
     todos: todosSlice.reducer,
-    categories: categoriesSlice.reducer,
-    id: idSlice.reducer
+    categories: categoriesSlice.reducer
   }
 });
 
 export default store;
 
-export const { setTodos } = todosSlice.actions;
-export const { setCategories } = categoriesSlice.actions;
-export const { setId } = idSlice.actions;
 export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories };
