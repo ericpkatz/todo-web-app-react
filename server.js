@@ -17,6 +17,17 @@ app.get('/api/todos', async(req, res, next)=> {
   }
 });
 
+app.delete('/api/todos/:id', async(req, res, next)=> {
+  try {
+    const todo = await Todo.findByPk(req.params.id);
+    await todo.destroy();
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 app.post('/api/todos', async(req, res, next)=> {
   try {
     const categories = await Category.findAll();
