@@ -1,26 +1,51 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateTodo } from './store';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const Todo = ()=> {
-  const { todos, categories } = useSelector(state => state);
+const TodoUpdate = ()=> {
+  const { categories, todos } = useSelector(state => state);
+  const [name, setName] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
 
-  const todo = todos.find( todo => todo.id === id*1);
-  //be defensive!!
-  if(!todo){
-    return null;
-  }
+  React.useEffect(()=> {
+    const todo = todos.find(todo => todo.id === id*1);
+    if(todo){
+      setName(todo.name);
+      setCategoryId(todo.categoryId);
+    }
+  }, [todos, id]);
 
-  const category = categories.find(category => category.id === todo.categoryId);
+  const update = async(ev)=> {
+    ev.preventDefault();
+    const todo = {
+      id,
+      name,
+      categoryId: categoryId*1
+    };
+    await dispatch(updateTodo(todo));
+    navigate('/');
+  };
 
   return (
-    <div>
-      { todo.name }
-      <a href='#'>Back</a>
-      ({ category ? category.name: 'none'})
-    </div>
+    <form onSubmit={ update }>
+      <input value={ name } onChange={ ev => setName(ev.target.value)}/>
+      <select value={ categoryId } onChange={ ev => setCategoryId(ev.target.value)}>
+        <option value=''>-- choose a category</option>
+        {
+          categories.map( category => {
+            return (
+              <option key={ category.id } value={ category.id }>{ category.name }</option>
+            );
+          })
+        }
+      </select>
+      <button disabled={ name === '' || categoryId === ''}>Update</button>
+    </form>
   );
 };
 
-export default Todo;
+export default TodoUpdate;
