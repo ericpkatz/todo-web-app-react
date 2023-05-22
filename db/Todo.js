@@ -7,7 +7,8 @@ const Todo = conn.define('todo', {
     allowNull: false,
     validate: {
       notEmpty: true
-    }
+    },
+    unique: true
   },
 });
 

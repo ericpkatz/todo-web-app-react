@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const TodoCreate = ()=> {
   const { categories } = useSelector(state => state);
+  const [error, setError] = useState({});
   const [name, setName] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const dispatch = useDispatch();
@@ -16,12 +17,24 @@ const TodoCreate = ()=> {
       name,
       categoryId
     };
-    await dispatch(createTodo(todo));
-    navigate('/');
+    const response = await dispatch(createTodo(todo));
+    if(!response.error){
+      navigate('/');
+    }
+    else {
+      setError(response.payload);
+    }
   };
 
   return (
     <form onSubmit={ create }>
+      {
+        Object.keys(error).length ? (
+          <pre className='error'>
+            { JSON.stringify(error, null, 2) }
+          </pre>
+        ): (null)
+      }
       <input value={ name } onChange={ ev => setName(ev.target.value)}/>
       <select value={ categoryId } onChange={ ev => setCategoryId(ev.target.value)}>
         <option value=''>-- choose a category</option>

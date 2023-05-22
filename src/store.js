@@ -21,9 +21,14 @@ const destroyTodo = createAsyncThunk(
 
 const createTodo = createAsyncThunk(
   'createTodo',
-  async (todo)=> {
-    const response = await axios.post('/api/todos', todo)
-    return response.data;
+  async (todo, { rejectWithValue })=> {
+    try {
+      const response = await axios.post('/api/todos', todo)
+      return response.data;
+    }
+    catch(ex){
+      return rejectWithValue(ex.response.data);
+    }
   }
 );
 
