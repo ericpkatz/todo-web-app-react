@@ -1,15 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTodo, destroyTodo } from './store';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const Todos = ()=> {
   const { categories, todos } = useSelector(state => state);
+  const { term } = useParams();
   const dispatch = useDispatch();
   return (
     <ul>
       {
-        todos.map( todo => {
+        todos
+        .filter(todo => !term || todo.name.includes(term))
+        .map( todo => {
           const category = categories.find(category => category.id === todo.categoryId);
           return (
             <li key={ todo.id }>
