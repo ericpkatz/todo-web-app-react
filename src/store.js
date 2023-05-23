@@ -56,6 +56,14 @@ const createCategory = createAsyncThunk(
   }
 );
 
+const destroyCategory = createAsyncThunk(
+  'destroyCategory',
+  async (category)=> {
+    await axios.delete(`/api/categories/${category.id}`);
+    return category;
+  }
+);
+
 
 const todosSlice = createSlice({
   name: 'todos',
@@ -89,7 +97,11 @@ const categoriesSlice = createSlice({
       return action.payload;
     });
     builder.addCase(createCategory.fulfilled, (state, action)=> {
-      state.push(action.payload);
+      //state.push(action.payload);
+      return [...state, action.payload];
+    });
+    builder.addCase(destroyCategory.fulfilled, (state, action)=> {
+      return state.filter(category => category.id !== action.payload.id);
     })
   }
 });
@@ -103,4 +115,4 @@ const store = configureStore({
 
 export default store;
 
-export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories, createCategory };
+export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories, createCategory, destroyCategory };

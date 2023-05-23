@@ -28,6 +28,17 @@ app.delete('/api/todos/:id', async(req, res, next)=> {
   }
 });
 
+app.delete('/api/categories/:id', async(req, res, next)=> {
+  try {
+    const category = await Category.findByPk(req.params.id);
+    await category.destroy();
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 app.post('/api/todos', async(req, res, next)=> {
   try {
     const todo = await Todo.create(req.body);

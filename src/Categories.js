@@ -1,8 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { destroyCategory } from './store';
 
 const Categories = ()=> {
   const { categories, todos } = useSelector(state => state);
+  const dispatch = useDispatch();
   return (
     <ul>
       {
@@ -12,6 +14,14 @@ const Categories = ()=> {
             <li key={ category.id }>
               { category.name }
               ({ filtered.length })
+              <button
+                disabled={ filtered.length }
+                onClick={
+                  ()=> dispatch(destroyCategory(category)) 
+                }
+              >
+                x
+              </button>
             </li>
           );
         })
