@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import store, { createTodo, fetchTodos, fetchCategories } from './store';
+import store, { socketActions, createTodo, fetchTodos, fetchCategories } from './store';
 import { Link, HashRouter, Routes, Route } from 'react-router-dom';
 
 import Categories from './Categories';
@@ -16,6 +16,17 @@ import Search from './Search';
 function App() {
   const {todos, categories} = useSelector(state => state);
   const dispatch = useDispatch();
+
+  React.useEffect(()=> {
+    const socket = new WebSocket(window.location.origin.replace('http', 'ws'));
+    socket.addEventListener('message', (evt)=> {
+      const message = JSON.parse(evt.data);
+      if(message.type){
+        const action = socketActions[message.type];
+        dispatch(action(message.payload));
+      }
+    });
+  }, []);
 
   React.useEffect(()=> {
     dispatch(fetchTodos());

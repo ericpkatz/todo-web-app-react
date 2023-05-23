@@ -2,6 +2,7 @@ const { conn, seedData, Todo, Category } = require('./db');
 const express = require('express');
 const app = express();
 const path = require('path');
+const ws = require('ws');
 app.use(express.json());
 app.use('/dist', express.static('dist'));
 
@@ -33,6 +34,9 @@ app.delete('/api/categories/:id', async(req, res, next)=> {
     const category = await Category.findByPk(req.params.id);
     await category.destroy();
     res.sendStatus(204);
+    sockets.forEach( socket => {
+      socket.send(JSON.stringify({type: 'CATEGORY_DESTROY', payload: category}));
+    });
   }
   catch(ex){
     next(ex);
@@ -51,7 +55,12 @@ app.post('/api/todos', async(req, res, next)=> {
 
 app.post('/api/categories', async(req, res, next)=> {
   try {
-    res.send(await Category.create(req.body));
+    const category = await Category.create(req.body);
+    res.send(category);
+
+    sockets.forEach( socket => {
+      socket.send(JSON.stringify({ type: 'CATEGORY_CREATE', payload: category}));
+    });
   }
   catch(ex){
     next(ex);
@@ -89,7 +98,7 @@ app.use((err, req, res, next)=> {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, async()=> {
+const server = app.listen(port, async()=> {
   try{
     console.log(`listening on port ${port}`);
     await conn.sync({ force: true });
@@ -100,4 +109,18 @@ app.listen(port, async()=> {
   catch(ex){
     console.log(ex);
   }
+});
+
+let sockets = [];
+
+const socketServer = new ws.WebSocketServer({ server });
+
+socketServer.on('connection', (socket)=> {
+  socket.send(JSON.stringify({ message: 'hello world'}));
+  sockets.push(socket);
+  console.log(sockets.length);
+
+  socket.on('close', ()=> {
+    sockets = sockets.filter(s => s !== socket);
+  });
 });

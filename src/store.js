@@ -91,6 +91,12 @@ const categoriesSlice = createSlice({
   name: 'categories',
   initialState: [],
   reducers: {
+    CATEGORY_CREATE: (state, action)=> {
+      return [...state, action.payload];
+    },
+    CATEGORY_DESTROY: (state, action)=> {
+      return state.filter(category => category.id !== action.payload.id);
+    }
   },
   extraReducers: (builder)=> {
     builder.addCase(fetchCategories.fulfilled, (state, action)=> {
@@ -113,6 +119,9 @@ const store = configureStore({
   }
 });
 
+
+const socketActions = {...categoriesSlice.actions };
+
 export default store;
 
-export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories, createCategory, destroyCategory };
+export { socketActions, destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories, createCategory, destroyCategory };
