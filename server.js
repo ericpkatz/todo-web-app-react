@@ -38,6 +38,15 @@ app.post('/api/todos', async(req, res, next)=> {
   }
 });
 
+app.post('/api/categories', async(req, res, next)=> {
+  try {
+    res.send(await Category.create(req.body));
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 app.put('/api/todos/:id', async(req, res, next)=> {
   try {
     const todo = await Todo.findByPk(req.params.id);

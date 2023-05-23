@@ -48,6 +48,14 @@ const fetchCategories = createAsyncThunk(
   }
 );
 
+const createCategory = createAsyncThunk(
+  'createCategory',
+  async (category)=> {
+    const response = await axios.post('/api/categories', category);
+    return response.data;
+  }
+);
+
 
 const todosSlice = createSlice({
   name: 'todos',
@@ -79,6 +87,9 @@ const categoriesSlice = createSlice({
   extraReducers: (builder)=> {
     builder.addCase(fetchCategories.fulfilled, (state, action)=> {
       return action.payload;
+    });
+    builder.addCase(createCategory.fulfilled, (state, action)=> {
+      state.push(action.payload);
     })
   }
 });
@@ -92,4 +103,4 @@ const store = configureStore({
 
 export default store;
 
-export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories };
+export { destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories, createCategory };

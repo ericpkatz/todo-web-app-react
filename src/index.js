@@ -9,6 +9,7 @@ import Categories from './Categories';
 import Todos from './Todos';
 import Todo from './Todo';
 import TodoCreate from './TodoCreate';
+import CategoryCreate from './CategoryCreate';
 import Search from './Search';
 
 
@@ -26,6 +27,8 @@ function App() {
     <div>
       <h1><Link to='/'>Acme Todos ({ todos.length })!!</Link></h1>
       <Link to='/create'>Create A Todo</Link>
+      {' '}
+      <Link to='/categories/create'>Create A Category</Link>
       <Routes>
         <Route path='/' element={ <Search /> } />
         <Route path='/search/:term' element={ <Search /> } />
@@ -36,6 +39,7 @@ function App() {
         <Route path='/search/:term' element={ <Todos /> } />
         <Route path='/:id' element={ <Todo /> } />
         <Route path='/create' element={ <TodoCreate /> } />
+        <Route path='/categories/create' element={ <CategoryCreate /> } />
       </Routes>
       <Categories />
     </div>
