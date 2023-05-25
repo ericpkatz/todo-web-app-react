@@ -109,6 +109,8 @@ app.delete('/api/categories/:id', async(req, res, next)=> {
 
 app.post('/api/todos', async(req, res, next)=> {
   try {
+    //look for header to find out user
+    //that user can own the todo
     const todo = await Todo.create(req.body);
     res.send(todo);
     sockets.forEach( socket => {
