@@ -1,5 +1,6 @@
 import { createAsyncThunk, configureStore, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import categoriesSlice from './categoriesSlice';
 
 
 const updateTodo = createAsyncThunk(
@@ -40,30 +41,6 @@ const fetchTodos = createAsyncThunk(
   }
 );
 
-const fetchCategories = createAsyncThunk(
-  'fetchCategories',
-  async ()=> {
-    const response = await axios.get('/api/categories');
-    return response.data;
-  }
-);
-
-const createCategory = createAsyncThunk(
-  'createCategory',
-  async (category)=> {
-    const response = await axios.post('/api/categories', category);
-    return response.data;
-  }
-);
-
-const destroyCategory = createAsyncThunk(
-  'destroyCategory',
-  async (category)=> {
-    await axios.delete(`/api/categories/${category.id}`);
-    return category;
-  }
-);
-
 
 const todosSlice = createSlice({
   name: 'todos',
@@ -87,30 +64,6 @@ const todosSlice = createSlice({
   }
 });
 
-const categoriesSlice = createSlice({
-  name: 'categories',
-  initialState: [],
-  reducers: {
-    CATEGORY_CREATE: (state, action)=> {
-      return [...state, action.payload];
-    },
-    CATEGORY_DESTROY: (state, action)=> {
-      return state.filter(category => category.id !== action.payload.id);
-    }
-  },
-  extraReducers: (builder)=> {
-    builder.addCase(fetchCategories.fulfilled, (state, action)=> {
-      return action.payload;
-    });
-    builder.addCase(createCategory.fulfilled, (state, action)=> {
-      //state.push(action.payload);
-      return [...state, action.payload];
-    });
-    builder.addCase(destroyCategory.fulfilled, (state, action)=> {
-      return state.filter(category => category.id !== action.payload.id);
-    })
-  }
-});
 
 const store = configureStore({
   reducer: {
@@ -123,5 +76,12 @@ const store = configureStore({
 const socketActions = {...categoriesSlice.actions };
 
 export default store;
+export * from './categoriesSlice';
 
-export { socketActions, destroyTodo, createTodo, updateTodo, fetchTodos, fetchCategories, createCategory, destroyCategory };
+export {
+  socketActions,
+  destroyTodo,
+  createTodo,
+  updateTodo,
+  fetchTodos
+};
