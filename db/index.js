@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const conn = require('./conn');
 const Todo = require('./Todo');
 const Category = require('./Category');
+const User = require('./User');
 
 Todo.belongsTo(Category);
 Category.hasMany(Todo);
@@ -21,11 +22,17 @@ const seedData = async()=> {
     Todo.create({ name: 'learn react', categoryId: learning.id}),
     Todo.create({ name: 'take out garbage', categoryId: chores.id })
   ]);
+
+  await Promise.all([
+    User.create({ username: 'moe', password: 'm'}),
+    User.create({ username: 'lucy', password: 'l'})
+  ]);
 };
 
 module.exports = {
   Todo,
   Category,
+  User,
   conn,
   seedData
 };

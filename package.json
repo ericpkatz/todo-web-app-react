@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "build:dev": "webpack --mode=development --watch",
-    "start:dev": "nodemon server --ignore src/ --ignore dist/"
+    "start:dev": "JWT=s44 nodemon server --ignore src/ --ignore dist/"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "pg": "^8.10.0",
     "react-redux": "^8.0.5",
     "sequelize": "^6.31.1",

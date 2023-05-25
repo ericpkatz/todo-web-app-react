@@ -1,12 +1,64 @@
-const { conn, seedData, Todo, Category } = require('./db');
+const { conn, seedData, Todo, User, Category } = require('./db');
 const express = require('express');
 const app = express();
 const path = require('path');
 const ws = require('ws');
+const jwt = require('jsonwebtoken');
 app.use(express.json());
 app.use('/dist', express.static('dist'));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
+
+app.post('/api/auth/login', async(req, res, next)=> {
+  try{
+    const { username, password } = req.body
+    const user = await User.findOne({
+      where: {
+        username,
+        password
+      }
+    });
+    if(!user){
+      throw 'NOOOOO';
+    }
+    const token = jwt.sign({ id: user.id}, process.env.JWT);
+    console.log(token);
+    res.send({ token });
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.post('/api/auth/register', async(req, res, next)=> {
+  try{
+    const user = await User.create(req.body);
+    if(!user){
+      throw 'NOOOOO';
+    }
+    const token = jwt.sign({ id: user.id}, process.env.JWT);
+    console.log(token);
+    res.send({ token });
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.get('/api/auth', async(req, res, next)=> {
+  try{
+    const token = jwt.verify(req.headers.authorization, process.env.JWT);
+    const { id } = token;
+    const user = await User.findByPk(id);
+    if(!user){
+      throw 'NOOOOO';
+    }
+    res.send(user);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
 
 app.get('/api/todos', async(req, res, next)=> {
   try {
