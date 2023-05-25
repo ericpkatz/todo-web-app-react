@@ -31,7 +31,10 @@ const categoriesSlice = createSlice({
   initialState: [],
   reducers: {
     CATEGORY_CREATE: (state, action)=> {
-      return [...state, action.payload];
+      if(!state.find(category => category.id === action.payload.id)){
+        return [...state, action.payload];
+      }
+      return state;
     },
     CATEGORY_DESTROY: (state, action)=> {
       return state.filter(category => category.id !== action.payload.id);
@@ -42,8 +45,10 @@ const categoriesSlice = createSlice({
       return action.payload;
     });
     builder.addCase(createCategory.fulfilled, (state, action)=> {
-      //state.push(action.payload);
-      return [...state, action.payload];
+      if(!state.find(category => category.id === action.payload.id)){
+        return [...state, action.payload];
+      }
+      return state;
     });
     builder.addCase(destroyCategory.fulfilled, (state, action)=> {
       return state.filter(category => category.id !== action.payload.id);

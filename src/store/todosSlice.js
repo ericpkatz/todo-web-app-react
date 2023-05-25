@@ -44,6 +44,18 @@ const todosSlice = createSlice({
   name: 'todos',
   initialState: [],
   reducers: {
+    TODO_UPDATE: (state, action)=> {
+      return state.map( todo => todo.id === action.payload.id ? action.payload: todo);
+    },
+    TODO_CREATE: (state, action)=> {
+      if(!state.find(todo => todo.id === action.payload.id)){
+        return [...state, action.payload];
+      }
+      return state;
+    },
+    TODO_DESTROY: (state, action)=> {
+      return state.filter(todo => todo.id !== action.payload.id);
+    }
   },
   extraReducers: (builder)=> {
     builder.addCase(fetchTodos.fulfilled, (state, action)=> {
@@ -53,8 +65,10 @@ const todosSlice = createSlice({
       return state.map( todo => todo.id === action.payload.id ? action.payload: todo);
     })
     builder.addCase(createTodo.fulfilled, (state, action)=> {
-      return [...state, action.payload];
-      //state.push(action.payload);
+      if(!state.find(todo => todo.id === action.payload.id)){
+        return [...state, action.payload];
+      }
+      return state;
     })
     builder.addCase(destroyTodo.fulfilled, (state, action)=> {
       return state.filter(todo => todo.id !== action.payload.id);
