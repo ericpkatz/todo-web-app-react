@@ -4,6 +4,7 @@ const app = express();
 const path = require('path');
 const ws = require('ws');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 app.use(express.json());
 app.use('/dist', express.static('dist'));
 
@@ -14,11 +15,14 @@ app.post('/api/auth/login', async(req, res, next)=> {
     const { username, password } = req.body
     const user = await User.findOne({
       where: {
-        username,
-        password
+        username
       }
     });
     if(!user){
+      throw 'NOOOOO';
+    }
+    const correctPassword = await bcrypt.compare(password, user.password);
+    if(!correctPassword){
       throw 'NOOOOO';
     }
     const token = jwt.sign({ id: user.id}, process.env.JWT);
@@ -32,7 +36,8 @@ app.post('/api/auth/login', async(req, res, next)=> {
 
 app.post('/api/auth/register', async(req, res, next)=> {
   try{
-    const user = await User.create(req.body);
+    const password = await bcrypt.hash(req.body.password, 5);
+    const user = await User.create({...req.body, password });
     if(!user){
       throw 'NOOOOO';
     }
@@ -49,7 +54,11 @@ app.get('/api/auth', async(req, res, next)=> {
   try{
     const token = jwt.verify(req.headers.authorization, process.env.JWT);
     const { id } = token;
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(id, {
+      attributes: {
+        exclude: ['password']
+      }
+    });
     if(!user){
       throw 'NOOOOO';
     }
