@@ -190,10 +190,12 @@ const port = process.env.PORT || 3000;
 const server = app.listen(port, async()=> {
   try{
     console.log(`listening on port ${port}`);
-    await conn.sync({ force: true });
-    console.log('connected');
-    await seedData();
-    console.log('seeded');
+    if(process.env.PROD !== 'true'){
+      await conn.sync({ force: true });
+      console.log('connected');
+      await seedData();
+      console.log('seeded');
+    }
   }
   catch(ex){
     console.log(ex);
