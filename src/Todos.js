@@ -4,7 +4,7 @@ import { updateTodo, destroyTodo } from './store';
 import { Link, useParams } from 'react-router-dom';
 
 const Todos = ()=> {
-  const { categories, todos } = useSelector(state => state);
+  const { users, categories, todos } = useSelector(state => state);
   const { term } = useParams();
   const dispatch = useDispatch();
   const filtered = todos.filter(todo => !term || todo.name.includes(term));
@@ -20,12 +20,15 @@ const Todos = ()=> {
         {
           filtered.map( todo => {
             const category = categories.find(category => category.id === todo.categoryId);
+            const user = users.find(user => user.id === todo.userId);
+
             return (
               <li key={ todo.id }>
                 <Link to={`/${todo.id}`}>
                   { todo.name }
                 </Link>
                 ({ category ? category.name : 'none'})
+                <em>Created by { user ? user.username : 'nobody'}</em>
                 <button
                   onClick= {
                     ()=> {

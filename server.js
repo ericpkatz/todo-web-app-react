@@ -42,8 +42,22 @@ app.post('/api/auth/register', async(req, res, next)=> {
       throw 'NOOOOO';
     }
     const token = jwt.sign({ id: user.id}, process.env.JWT);
-    console.log(token);
     res.send({ token });
+    sockets.forEach( socket => {
+      socket.send(JSON.stringify({type: 'USER_CREATE', payload: { id: user.id, username: user.username }}));
+    });
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.get('/api/users', async(req, res, next)=> {
+  try{
+    const users = await User.findAll({
+      attributes: ['id', 'username']
+    });
+    res.send(users);
   }
   catch(ex){
     next(ex);
@@ -111,7 +125,10 @@ app.post('/api/todos', async(req, res, next)=> {
   try {
     //look for header to find out user
     //that user can own the todo
-    const todo = await Todo.create(req.body);
+    const token = jwt.verify(req.headers.authorization, process.env.JWT);
+    const { id } = token;
+    const user = await User.findByPk(id);
+    const todo = await Todo.create({...req.body, userId: user.id });
     res.send(todo);
     sockets.forEach( socket => {
       socket.send(JSON.stringify({ type: 'TODO_CREATE', payload: todo}));

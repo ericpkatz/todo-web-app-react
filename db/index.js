@@ -7,8 +7,16 @@ const bcrypt = require('bcrypt');
 
 Todo.belongsTo(Category);
 Category.hasMany(Todo);
+Todo.belongsTo(User);
 
 const seedData = async()=> {
+  const moePassword = await bcrypt.hash('MOE123', 5);
+  const lucyPassword = await bcrypt.hash('LUCY123', 5);
+  const [moe, lucy ] = await Promise.all([
+    User.create({ username: 'moe', password: moePassword}),
+    User.create({ username: 'lucy', password: lucyPassword})
+  ]);
+
   const categories = await Promise.all([
     Category.create({ name: 'pets'}),
     Category.create({ name: 'learning'}),
@@ -18,18 +26,12 @@ const seedData = async()=> {
   const [pets, learning, chores] = categories;
 
   await Promise.all([
-    Todo.create({ name: 'walk the dog', categoryId: pets.id}),
-    Todo.create({ name: 'buy a chew toy', categoryId: pets.id}),
-    Todo.create({ name: 'learn react', categoryId: learning.id}),
-    Todo.create({ name: 'take out garbage', categoryId: chores.id })
+    Todo.create({ name: 'walk the dog', categoryId: pets.id, userId: moe.id}),
+    Todo.create({ name: 'buy a chew toy', categoryId: pets.id, userId: moe.id }),
+    Todo.create({ name: 'learn react', categoryId: learning.id, userId: moe.id }),
+    Todo.create({ name: 'take out garbage', categoryId: chores.id, userId: lucy.id})
   ]);
 
-  const moePassword = await bcrypt.hash('MOE123', 5);
-  const lucyPassword = await bcrypt.hash('LUCY123', 5);
-  await Promise.all([
-    User.create({ username: 'moe', password: moePassword}),
-    User.create({ username: 'lucy', password: lucyPassword})
-  ]);
 };
 
 module.exports = {

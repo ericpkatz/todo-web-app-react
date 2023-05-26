@@ -22,7 +22,15 @@ const createTodo = createAsyncThunk(
   'createTodo',
   async (todo, { rejectWithValue })=> {
     try {
-      const response = await axios.post('/api/todos', todo)
+      const response = await axios.post(
+        '/api/todos',
+        todo,
+        {
+          headers: {
+            authorization: window.localStorage.getItem('token')
+          }
+        }
+      )
       return response.data;
     }
     catch(ex){
